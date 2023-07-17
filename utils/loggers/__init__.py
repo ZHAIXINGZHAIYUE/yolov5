@@ -66,8 +66,6 @@ try:
 except (ImportError, AssertionError):
     comet_ml = None
 
-wandb = None
-
 
 class Loggers:
     # YOLOv5 Loggers class
