@@ -659,7 +659,7 @@ class LoadImagesAndLabels(Dataset):
             raise Exception(
                 f"{prefix}Error loading data from {path}: {e}\n{HELP_URL}"
             ) from e
-
+        self.im_files_ori = self.im_files.copy()
         # Check cache
         # self.label_files = img2label_paths(self.im_files)  # labels
         self.label_files = img2label_paths2(self.im_files, "labels_yolo")  # labels
@@ -680,7 +680,6 @@ class LoadImagesAndLabels(Dataset):
                 self.cache_labels(cache_path, prefix),
                 False,
             )  # run cache ops
-
         # Display cache
         nf, nm, ne, nc, n = cache.pop(
             "results"
@@ -729,6 +728,8 @@ class LoadImagesAndLabels(Dataset):
         self.batch = bi  # batch index of image
         self.n = n
         self.indices = range(n)
+        import pdb
+        pdb.set_trace()
 
         # Update labels
         include_class = []  # filter labels to include only these classes (optional)
@@ -802,6 +803,12 @@ class LoadImagesAndLabels(Dataset):
                     b += self.ims[i].nbytes
                 pbar.desc = f"{prefix}Caching images ({b / gb:.1f}GB {cache_images})"
             pbar.close()
+        self.indices_ori = []
+        for path in self.im_files_ori:
+            index = self.im_files.index(path)
+            self.indices_ori.append(index)
+        # import pdb
+        # pdb.set_trace()
 
     def check_cache_ram(self, safety_margin=0.1, prefix=""):
         # Check image caching requirements vs available memory
@@ -876,7 +883,8 @@ class LoadImagesAndLabels(Dataset):
         return x
 
     def __len__(self):
-        return len(self.im_files)
+        # return len(self.im_files)
+        return len(self.indices_ori)
 
     # def __iter__(self):
     #     self.count = -1
@@ -885,7 +893,8 @@ class LoadImagesAndLabels(Dataset):
     #     return self
 
     def __getitem__(self, index):
-        index = self.indices[index]  # linear, shuffled, or image_weights
+        # index = self.indices[index]  # linear, shuffled, or image_weights
+        index = self.indices_ori[index]
 
         hyp = self.hyp
         mosaic = self.mosaic and random.random() < hyp["mosaic"]
