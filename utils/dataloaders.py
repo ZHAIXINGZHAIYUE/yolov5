@@ -728,8 +728,8 @@ class LoadImagesAndLabels(Dataset):
         self.batch = bi  # batch index of image
         self.n = n
         self.indices = range(n)
-        import pdb
-        pdb.set_trace()
+        # import pdb
+        # pdb.set_trace()
 
         # Update labels
         include_class = []  # filter labels to include only these classes (optional)
@@ -803,10 +803,14 @@ class LoadImagesAndLabels(Dataset):
                     b += self.ims[i].nbytes
                 pbar.desc = f"{prefix}Caching images ({b / gb:.1f}GB {cache_images})"
             pbar.close()
-        self.indices_ori = []
-        for path in self.im_files_ori:
-            index = self.im_files.index(path)
-            self.indices_ori.append(index)
+
+        if self.rect:
+            self.indices_ori = self.indices
+        else:
+            self.indices_ori = []
+            for path in self.im_files_ori:
+                index = self.im_files.index(path)
+                self.indices_ori.append(index)
         # import pdb
         # pdb.set_trace()
 
