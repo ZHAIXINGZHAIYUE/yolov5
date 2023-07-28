@@ -645,6 +645,7 @@ class LoadImagesAndLabels(Dataset):
                         t = t.readlines()
                         parent = str(p.parent) + os.sep
                         for x in t:
+                            #print(x)
                             f += [os.path.join(img_dir, x.strip())]
                 else:
                     raise FileNotFoundError(f"{prefix}{p} does not exist")

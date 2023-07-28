@@ -171,8 +171,9 @@ def run(
                               f'classes). Pass correct combination of --weights and --data that are trained together.'
         model.warmup(imgsz=(1 if pt else batch_size, 3, imgsz, imgsz))  # warmup
         pad, rect = (0.0, False) if task == 'speed' else (0.5, pt)  # square inference for benchmarks
-        task = task if task in ('train', 'val', 'test') else 'val'  # path to train/val/test images
-        dataloader = create_dataloader(data[task],
+        task = task if task in ('train', 'val', 'test') else 'val'  # path to train/val/test Images
+        img_dir = data['path']
+        dataloader = create_dataloader(data[task],img_dir,
                                        imgsz,
                                        batch_size,
                                        stride,
