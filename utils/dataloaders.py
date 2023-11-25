@@ -85,6 +85,7 @@ VID_FORMATS = (
     "mpg",
     "ts",
     "wmv",
+    "flv",
 )  # include video suffixes
 LOCAL_RANK = int(
     os.getenv("LOCAL_RANK", -1)
@@ -171,6 +172,7 @@ def create_dataloader(
     prefix="",
     shuffle=False,
     seed=0,
+    include_class=[]
 ):
     if rect and shuffle:
         LOGGER.warning(
@@ -192,6 +194,7 @@ def create_dataloader(
             pad=pad,
             image_weights=image_weights,
             prefix=prefix,
+            include_class=include_class
         )
     print(len(dataset), "dataset len")
     batch_size = min(batch_size, len(dataset))
@@ -618,6 +621,7 @@ class LoadImagesAndLabels(Dataset):
         pad=0.0,
         min_items=0,
         prefix="",
+        include_class=[]	
     ):
         self.img_size = img_size
         self.augment = augment
@@ -733,7 +737,7 @@ class LoadImagesAndLabels(Dataset):
         # pdb.set_trace()
 
         # Update labels
-        include_class = []  # filter labels to include only these classes (optional)
+        include_class = include_class  # filter labels to include only these classes (optional)
         self.segments = list(self.segments)
         include_class_array = np.array(include_class).reshape(1, -1)
         for i, (label, segment) in enumerate(zip(self.labels, self.segments)):

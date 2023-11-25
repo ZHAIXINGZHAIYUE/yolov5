@@ -280,6 +280,9 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
         LOGGER.info("Using SyncBatchNorm()")
 
     # Trainloader
+    include_class = data_dict['include_class']
+    print('include_class', include_class)
+
     train_loader, dataset = create_dataloader(
         train_path,
         img_dir,
@@ -298,9 +301,11 @@ def train(hyp, opt, device, callbacks):  # hyp is path/to/hyp.yaml or hyp dictio
         prefix=colorstr("train: "),
         shuffle=True,
         seed=opt.seed,
+        include_class=include_class
     )
     labels = np.concatenate(dataset.labels, 0)
     mlc = int(labels[:, 0].max())  # max label class
+    print('labels', 'mlc', labels, mlc)
     assert (
         mlc < nc
     ), f"Label class {mlc} exceeds nc={nc} in {data}. Possible class labels are 0-{nc - 1}"
